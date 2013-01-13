@@ -1,0 +1,130 @@
+\documentclass{article}
+
+\usepackage{amsfonts}
+\usepackage{cs7480}
+
+\title{CS 7480 Spring 2013 Control Flow Analysis}
+\author{notes by: Stephen Chang}
+\date{Friday, January 11, 2013}
+
+\begin{document}
+
+\maketitle
+
+\section{Summary}
+General monotone flow analysis framework.
+\begin{enumerate}
+  \item Monotonic, continuous functions
+  \item Lattices
+    \begin{itemize}
+      \item represents a program property, ie, a ``fact'' lattice
+      \item ordering is information ordering
+      \item modeling programs as functions on lattices
+    \end{itemize}
+\end{enumerate}
+
+\section{Monotonic, continuous functions}
+\begin{definition}
+  A \emph{least upper bound ($\lub$)} on set $S$:%, ie $\bigsqcup S$:
+  \begin{enumerate}
+    \item $\forall x \in S: x \leq \lub{S}$, \\
+      ie, $\lub{S}$ is an upper bound of $S$
+    \item $\forall x \in S: x \leq y \implies \lub{S} \leq y$,\\
+      ie, $\lub{S}$ is less than or equal to all upper bounds of $S$.
+  \end{enumerate}
+\end{definition}
+
+\noindent If ordering is information ordering, then $\lub{S}$ is the ``most
+precise'' upper bound.
+
+\begin{definition}
+  In a \emph{complete partial order (cpo)}, every chain has a lub.
+\end{definition}
+
+\begin{definition}
+  A \emph{pointed set} has a bottom ($\bot$) element.
+\end{definition}
+
+\begin{definition}
+  A function $f$ is \emph{monotone} if $\forall a,b:a\leq b \implies f(a) \leq
+  f(b)$. 
+\end{definition}
+
+\noindent In other words, more information gives better conclusions. But we
+don't need to worry much about monotonicity because it's pretty much always
+true.
+
+\begin{definition}
+  A function $f$ is \emph{continuous} if $\forall \textrm{ chains } C:
+  f(\lub{C}) = \lub{f(C)}$.
+\end{definition}
+
+\noindent In other words, the function and $\lub$ operations commute. So you
+``can sneak up on an answer.''
+
+\begin{theorem} \label{thm:contmono}
+  continuous $\implies$ monotone
+\end{theorem}
+%
+\begin{proof}.
+  \begin{enumerate}
+  \item $x\leq y\implies \lub{\set{x,y}} = y$
+  \item From the definition of continuous:
+    $$f(\lub{\set{x,y}}) = \lub{f(\set{x,y})}$$
+    Using step 1:
+    $$f(y) = \lub{f(\set{x,y})} = \lub{\set{f(x),f(y)}}$$
+    so
+    $$f(x)\leq f(y)$$
+    meaning $f$ is monotone.
+  \end{enumerate}
+\end{proof}
+
+\begin{theorem}
+  monotonic $\implies$ continuous, when cpo chains are finite
+\end{theorem}
+%
+\begin{proof}
+  Consider (finite) chain $C = x_1\leq\cdots\leq x_n$. Want to show: 
+$$f(\lub{C}) = \lub{f(C)}$$
+\begin{enumerate}
+  \item $\lub{C} = x_n$, so $f(\lub{C}) = f(x_n)$
+  \item By monotonicity:
+    $$f(x_1)\leq\cdots\leq f(x_n)$$
+    so
+    $$\lub{f(C)} = f(x_n)$$
+\end{enumerate}
+\end{proof}
+
+\begin{theorem}
+  With an infinite chain, monotone $\;\;\not\!\!\!\!\implies\!$ continuous.
+\end{theorem}
+%
+\begin{proof}
+  Counterexample:\\
+  $f:\mathbb{N}_\infty\rightarrow\mathbb{N}_\infty$, $f(i) = 0$, for $i \in \mathbb{N}$, $f(\infty) = 1$\\
+  Consider the chain $C = \mathbb{N}$. $f(\lub{C}) = f(\infty) = 1$, but $\lub{f(C)} = 0$.
+\end{proof}
+
+\begin{theorem}[Least Fixed-point]
+  If $D$ is a pointed cpo and $f:D\rightarrow D$ is continuous, then $f$ has a \emph{least fixed-point (lfp)}, $\fix{f} = \lub{\set{f^n\bot\mid n\geq 0}}$.
+\end{theorem}
+
+\noindent Recall that a recursive function is a search for a fixed point. If
+there is a least fixed-point, then there is a ``best answer''.
+
+\begin{proof}
+Summary:
+\begin{enumerate}
+  \item Show that $\set{f^n\bot\mid n\geq 0}$ has a $\lub$.
+  \item Show that the $\lub$ is a fixed-point.
+  \item Show that the $\lub$ is a least fixed-point.
+\end{enumerate}
+Proof:
+\begin{enumerate}
+\item
+\item
+\item
+\end{enumerate}
+\end{proof}
+
+\end{document}
