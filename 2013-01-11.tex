@@ -105,8 +105,10 @@ $$f(\lub{C}) = \lub{f(C)}$$
   Consider the chain $C = \mathbb{N}$. $f(\lub{C}) = f(\infty) = 1$, but $\lub{f(C)} = 0$.
 \end{proof}
 
+\newcommand{\fnset}[1][0]{\ensuremath{\set{f^n(\bot)\mid n\geq #1}}}
+
 \begin{theorem}[Least Fixed-point]
-  If $D$ is a pointed cpo and $f:D\rightarrow D$ is continuous, then $f$ has a \emph{least fixed-point (lfp)}, $\fix{f} = \lub{\set{f^n\bot\mid n\geq 0}}$.
+  If $D$ is a pointed cpo and $f:D\rightarrow D$ is continuous, then $f$ has a \emph{least fixed-point (lfp)}, $\fix{f} = \lub{\fnset}$
 \end{theorem}
 
 \noindent Recall that a recursive function is a search for a fixed point. If
@@ -115,16 +117,135 @@ there is a least fixed-point, then there is a ``best answer''.
 \begin{proof}
 Summary:
 \begin{enumerate}
-  \item Show that $\set{f^n\bot\mid n\geq 0}$ has a $\lub$.
+  \item Show that $\fnset$ has a $\lub$.
   \item Show that the $\lub$ is a fixed-point.
   \item Show that the $\lub$ is a least fixed-point.
 \end{enumerate}
 Proof:
 \begin{enumerate}
+  % Show that $\fnset$ has a $\lub$.
+\item 
+  \begin{enumerate}
+    \item continuous $\implies$ monotone, so $\bot\leq f(\bot)$, since $\bot$
+      is $\leq$ everything
+    \item using the same reasoning, we get the chain:
+      $$\bot\leq f(\bot)\leq f^2(\bot)\leq f^3(\bot)\leq\cdots$$
+      Since $f^0(\bot) = \bot$, $\fnset$ is a chain.
+    \item since $D$ is complete, every chain has a $\lub$ so $\fnset$ has a
+      $\lub$
+  \end{enumerate}
+  % Show that the $\lub$ is a fixed-point.
+\item 
+  \begin{enumerate}
+  \item Let $\lub{\fnset} = \fix{f}$. Then applying $f$ to both sides:
+    $$f(\fix f)=f(\lub{\fnset})$$
+  \item By continuity:
+    $$f(\lub{\fnset}) = \lub{f(\fnset)} = \lub{\fnset[1]}$$
+  \item $\fnset[1]$ is still a chain and removing the bottom element doesn't
+    change the $\lub$, so:
+    $$\lub{\fnset[1]} = \lub{\fnset} = \fix{f}$$
+    So $f(\fix{f}) = \fix{f}=\lub{\fnset}$ is a fixed-point.
+  \end{enumerate}
+  % Show that the $\lub$ is a least fixed-point.
 \item
-\item
-\item
+  \begin{enumerate}
+  \item Suppose $d'$ is a fixed-point so $d' = f(d')$. We know $\bot\leq d'$
+    and by monotonicity, $f(\bot)\leq f(d')$.  
+  \item But $f(d') = d'$ so $f(\bot)\leq d'$.
+  \item Applying $f$ again $f^2(\bot)\leq f(d') = d'$ so $f^2\leq d'$. Since
+    $f^n(\bot)\leq d'$, $d'$ is an upper bound of $\fnset$.
+  \item Since $\fix{f}$ is the least upper bound of $\fnset$, $\fix{f}\leq
+    d'$. Since $\fix{f} = \lub{\fnset}$ is also a fixed-point, it must be the
+    least fixed-point.
+  \end{enumerate}
 \end{enumerate}
 \end{proof}
 
+\subsubsection*{Takeaway from least fixed-point theorem:}
+If I can set up a problem as recursive equations, ie, a search for a
+fixed-point, then if my fact space has certain properties (pointed, continuous
+(and thus monotone) complete partial order), then there is a ``best'' answer.
+
+\paragraph{Fun fact (unrelated to this course):} The $\fix$ function is also continuous.
+
+\section{Lattices}
+\begin{definition}\label{def:lattice}
+  A poset $(S,\leq)$ is a \emph{lattice} iff $\forall x,y\in S$, there exists a
+  unique meet $\meet{x}{y}$ and join $\join{x}{y}$ such that:
+  \begin{enumerate}
+    \item $\meet{x}{y}\leq x$
+    \item $\meet{x}{y}\leq y$
+    \item $z\leq \meet{x}{z}\leq y\implies z\leq \meet{x}{y}$
+  \end{enumerate}
+  In other words, the meet is the greatest lower bound, ie the infimum. Also:
+  \begin{enumerate}
+    \item $\join{x}{y}\geq x$
+    \item $\join{x}{y}\geq y$
+    \item $z\geq \join{x}{z}\geq y\implies z\geq\join{x}{y}$
+  \end{enumerate}
+  In other words, the join is the least upper bound, ie the supremum.
+\end{definition}
+
+\paragraph{Other kinds of lattices:}
+\begin{itemize}
+  \item A semi-lattice has either a supremum or infimum but not both.
+  \item A bounded lattice has a $\bot$ and $\top$ element.
+  \item In a complete lattice, every set has a meet and join, including
+    infinite sets.
+  \item So complete $\implies$ bounded and finite lattices are complete.
+\end{itemize}
+
+\begin{definition}[Alternative (algebraic) lattice definition]
+  A \emph{lattice} is a set with meet and join operations such that they are:
+  \begin{itemize}
+    \item commutative
+    \item associative
+    \item absorption (ie $\join{x}{(\meet{x}{y})} = x$ and $\meet{x}{(\join{x}{y}}) = x$)
+  \end{itemize}
+  With these properties, we can prove the conditions from
+  definition~\ref{def:lattice}.
+\end{definition}
+
+\paragraph{meet and join are idempotent:}
+\begin{itemize}
+  \item $\join{x}{x} = x$
+  \item $\meet{x}{x} = x$
+  \item $\join{x}{\bot} = x$
+  \item $\meet{x}{\top} = x$
+\end{itemize}
+
+\paragraph{(Unrelated) homework: } Use the word ``palimpsest'' in a conversation.
+\paragraph{Bonus:} Use the word ``boustrophedon'' in a conversation.
+
+\paragraph{Non-guaranteed properties of lattices:}
+\begin{itemize}
+  \item distributivity: $\join{x}{(\meet{y}{z})} = \meet{(\join{x}{y})}{(\join{x}{z})}$
+  \item well-foundedness: every chain is finite, ie may be able to compute it
+\end{itemize}
+
+\paragraph{Some concrete lattices:}
+\begin{itemize}
+  \item powerset of $S$, $\mathcal{P}(S)$ is a lattice, $\leq = \subseteq$
+    (subset), meet = $\cap$, join = $\cup$, $\bot = \set{}$, $\top = S$
+  \item integers $\mathbb{Z}$ is an unbounded lattice, meet = min, join = max
+  \item $\mathbb{Z}_{-\infty,\infty}$ is a bounded lattice (I forgot the
+    analysis examples that use this lattice)
+  \item $\mathbb{Z}_{\bot,\top}$ is a flat lattice
+  \item logicians use the lattice of propositions: meet = and, join = or, $\leq
+    = \implies$
+  \item range analysis lattice $\mathcal{P}(Z)$: represent sets of integers as
+    ranges $[i,j]$
+
+    examples: 
+
+    $\join{[0,7]}{[5,10]} = [0,10]$
+
+    $\join{[0,5]}{[10,15]} = [0,15]$ (some precision was lost)
+\end{itemize}
+
+In flow analysis, there are 2 sources of ``crap'' (imprecision)
+\begin{enumerate}
+  \item join operation introduces approximation
+  \item (for some reason I didnt write down a \#2)
+\end{enumerate}
 \end{document}
